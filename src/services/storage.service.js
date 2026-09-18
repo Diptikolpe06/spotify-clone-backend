@@ -1,5 +1,17 @@
-const {Imagekit} = require('@imagekit/nodejs')
+const { ImageKit } = require("@imagekit/nodejs");
 
 const ImageClient = new ImageKit({
-  privateKey: process.env.IMAGEKIT_PRIVATE_KEY // This is the default and can be omitted
+    privateKey: process.env.IMAGEKIT_PRIVATE_KEY
 });
+
+async function uploadFile(file) {
+    const result = await ImageClient.files.upload({
+        file,
+        fileName: "music_" + Date.now(),
+        folder: "yt-complete-backend/music"
+    });
+
+    return result;
+}
+
+module.exports = { uploadFile };
