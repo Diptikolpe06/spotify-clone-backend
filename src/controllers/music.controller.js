@@ -95,7 +95,10 @@ async function  createAlbum(req, res) {
 
 async function getAllMusic(req,res){
 
-    const musics = await musicModel.find().populate("artist");
+    const musics = await musicModel
+    .find()
+    .skip(1)  // it will skip one music from musics array
+    .limit(1) // It will return only one music.This function will return limited musics.In real application there are millions of songs so they use limit of 20,30 somgs and this no. songs will appeare on screen    .populate("artist");
     
      res.status(200).json({
         message:"Musics fetched successfully",
@@ -107,7 +110,7 @@ async function getAllMusic(req,res){
 }
 
 async function getAllAlbums(req,res){
-    const albums = await albumModel.find().populate("artist","username email").populate("musics");
+    const albums = await albumModel.find().select("title artist").populate("artist","username email");
 
      res.status(200).json({
         message:"Albums fetched successfully",
@@ -115,5 +118,17 @@ async function getAllAlbums(req,res){
      })   
 }
 
+async function getAlbumById(req,res){
+    const albumId = req.params.albumId;
+    const album = await albumModel.findById(albumId).populate("artist","username email")
 
-module.exports = { createMusic ,createAlbum,getAllMusic ,getAllAlbums}
+    return res.status(200).json({
+        message:"Album fetched successfully",
+        album: album
+    })
+}
+
+
+
+
+module.exports = { createMusic ,createAlbum,getAllMusic ,getAllAlbums,getAlbumById}
